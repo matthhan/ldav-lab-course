@@ -1,0 +1,2 @@
+discussion in the lecture resulted in setting the session timeout for the
+purposes of this task to ~ 10s
