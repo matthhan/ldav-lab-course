@@ -33,17 +33,49 @@ filters = [
         lambda s: not s.endswith("CS_MainSurveyList"),
         lambda s: not s.endswith("Emails"),
         lambda s: not s.endswith("Video"),
+        lambda s: not s.endswith(".000"),
         lambda s: not "collaboration/Freigegebene Dokumente/images" in s
 ]
 
-compose = lambda f,g: (lambda x: f(g(x)))
+compose = lambda f,g: (lambda x: g(f(x)))
 #All of the transforms are applied to urls
 transforms = ft.reduce(compose,[
         lambda s: s.translate({",":None}),
         lambda s: s.replace('"',''),
         lambda s: s.strip(),
         lambda s: s[len("ws15/15ws-03860/"):],
-        lambda s: re.sub(r"(GWS_)([^/]*)","\\1$NAME_OF_GROUP",s)
+        lambda s: re.sub(r"(GWS_)([^/]*)","\\1$NAME_OF_GROUP",s),
+
+        lambda s: re.sub(r"/S[0-9]+","/SUBMISSION_NUMBER",s),
+        lambda s: re.sub(r"/A[0-9]+","/TASK_NUMBER",s),
+        
+        lambda s: re.sub(r"(Freigegebene Dokumente)/[^/]+/",r"\1/FOLDERNAME/",s),
+        #lambda s: re.sub(r"(DiscussionForum)/.+(?!.aspx)+",r"\1/THREADNAME",s),
+
+        lambda s: re.sub(r"/[^/]+.(java)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(pdf)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(txt)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(png)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(zip)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(jpg)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(odt)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(docx)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(html)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(jar)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(rar)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(JPG)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(PDF)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(7z)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(tex)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(pages)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(rtf)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(uxf)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(Java)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(bmp)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(doc)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(pptx)$",r"/FILENAME.\1",s),
+        lambda s: re.sub(r"/[^/]+.(ser)$",r"/FILENAME.\1",s)
+
 ])
 #Model of action
 class Action:
