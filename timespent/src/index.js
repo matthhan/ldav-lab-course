@@ -20,7 +20,7 @@ const preprocessed_data = withLevels(test_data,0)
 d3.select('#app').append('svg').attr('width',500).attr('height',500)
 let svg = d3.select('svg')
 
-const g = svg.append('g').attr('transform','translate(200,100)')
+const g = svg.append('g').attr('transform','translate(200,200) scale(2.5,2.5)')
 
 const pie = d3.pie().value(d => d.seconds_spent).padAngle(0.03)
 const first_level_slices = pie(preprocessed_data)
