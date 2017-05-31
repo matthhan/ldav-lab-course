@@ -6,11 +6,12 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js"
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [new HtmlWebpackPlugin({template:'public/index.html'})],
   module: {
     loaders: [
       { test: /\.css$/, loader: "style!css" },
       { test: /\.js/, exclude: /node_modules/, loader: "babel-loader" },
+      { test: /\.json/, loader: "json-loader" }
     ]
   }
 }
