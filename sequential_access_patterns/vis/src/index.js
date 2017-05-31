@@ -10,7 +10,7 @@ let svg = d3.select('svg')
 
 const color = d3.scaleOrdinal(d3.schemeCategory10)
 const ttdiv = d3.select('body').append('div').attr('id','tooltip').style('opacity',0)
-const g = svg.append('g')
+const g = svg.append('g').attr('transform','scale(2,2)')
 g.selectAll('rect').data(test_data).enter()
  .append('g')
    .append('rect')
