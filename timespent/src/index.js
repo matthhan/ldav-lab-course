@@ -22,14 +22,14 @@ let svg = d3.select('svg')
 
 const g = svg.append('g').attr('transform','translate(200,100)')
 
-const pie = d3.pie().value(d => d.seconds_spent)
+const pie = d3.pie().value(d => d.seconds_spent).padAngle(0.03)
 const first_level_slices = pie(preprocessed_data)
 let slices = first_level_slices
 for (let i = 0;i < slices.length;i++ ){
   const s = slices[i]
   if(s.data.children) {
     const endAngle = s.startAngle + (s.endAngle - s.startAngle) * (sum(s.data.children.map(x => x.seconds_spent))/s.data.seconds_spent)
-    slices = slices.concat(d3.pie().value(d => d.seconds_spent).startAngle(s.startAngle).endAngle(endAngle)(s.data.children))
+    slices = slices.concat(d3.pie().value(d => d.seconds_spent).startAngle(s.startAngle).endAngle(endAngle).padAngle(0.03)(s.data.children))
   }
 }
 
@@ -44,7 +44,7 @@ g
   .attr('fill',d => color(d.data.name))
   .on('mouseover', d => {
     ttdiv.transition().duration(200).style('opacity',.9)    
-    ttdiv.html(d.data.name)
+    ttdiv.html(d.data.name + '<br>' + d.data.seconds_spent + 's')
       .style('left',d3.event.pageX + 'px')
       .style('top',(d3.event.pageY -28) + 'px')
   })
