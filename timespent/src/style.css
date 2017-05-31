@@ -2,6 +2,10 @@ div#tooltip {
 
   position: absolute;
   text-align: center;
-  background: grey;
+  background: #111;
   pointer-events: none;
+  font-family: Sans-Serif;
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
 }
