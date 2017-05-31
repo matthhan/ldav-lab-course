@@ -1,0 +1,7 @@
+[
+  { "name": "first area", "seconds_spent": 80, "children": []},
+  { "name": "second area", "seconds_spent": 80, "children": []},
+  { "name": "third area", "seconds_spent": 80, "children": []},
+  { "name": "fourth area", "seconds_spent": 80, "children": []},
+  { "name": "fifth area", "seconds_spent": 80, "children": []}
+]
