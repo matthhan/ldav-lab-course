@@ -9,7 +9,7 @@ module.exports = {
   plugins: [new HtmlWebpackPlugin({template:'public/index.html'})],
   module: {
     loaders: [
-      { test: /\.css$/, loader: "style!css" },
+      { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.js/, exclude: /node_modules/, loader: "babel-loader" },
       { test: /\.json/, loader: "json-loader" }
     ]
