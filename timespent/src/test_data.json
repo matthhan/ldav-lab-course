@@ -1,12 +1,19 @@
 [
   { "name": "first area", "seconds_spent": 80, "children": [
     { "name": "first subarea", "seconds_spent": 30, "children": [
-      {"name": "first subsubarea", "seconds_spent":10 }
+      {"name": "first subsubarea", "seconds_spent":10 },
+      {"name": "second subsubarea", "seconds_spent":20 }
     ]},
-    { "name": "second subarea", "seconds_spent": 30 }
+    { "name": "second subarea", "seconds_spent": 30 },
+    { "name": "third subarea", "seconds_spent": 20 }
   ]},
-  { "name": "second area", "seconds_spent": 80, "children": []},
-  { "name": "third area", "seconds_spent": 80, "children": []},
-  { "name": "fourth area", "seconds_spent": 80, "children": []},
+  { "name": "second area", "seconds_spent": 80, "children": [
+    {"name": "first subarea of second area", "seconds_spent":70 },
+    {"name": "second subarea of second area", "seconds_spent":10 }
+  ]},
+  { "name": "third area", "seconds_spent": 80, "children": [
+    {"name": "first subarea of third area", "seconds_spent":80 }
+  ]},
+  { "name": "fourth area", "seconds_spent": 30, "children": []},
   { "name": "fifth area", "seconds_spent": 80, "children": []}
 ]
