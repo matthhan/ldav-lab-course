@@ -1,5 +1,10 @@
 [
-  { "name": "first area", "seconds_spent": 80, "children": []},
+  { "name": "first area", "seconds_spent": 80, "children": [
+    { "name": "first subarea", "seconds_spent": 30, "children": [
+      {"name": "first subsubarea", "seconds_spent":10 }
+    ]},
+    { "name": "second subarea", "seconds_spent": 30 }
+  ]},
   { "name": "second area", "seconds_spent": 80, "children": []},
   { "name": "third area", "seconds_spent": 80, "children": []},
   { "name": "fourth area", "seconds_spent": 80, "children": []},
