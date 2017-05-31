@@ -40,7 +40,7 @@ const ttdiv = d3.select('body').append('div').attr('id','tooltip').style('opacit
 g
   .selectAll('path.slice').data(slices).enter().append('path')
   .attr('class','slice')
-  .attr('d',(d,i) => d3.arc().innerRadius(30 + 30 * d.data.level).outerRadius(50 + 30 * d.data.level)(d,i))
+  .attr('d',(d,i) => d3.arc().innerRadius(20 + 20 * d.data.level).outerRadius(39 + 20 * d.data.level)(d,i))
   .attr('fill',d => color(d.data.name))
   .on('mouseover', d => {
     ttdiv.transition().duration(200).style('opacity',.9)    
