@@ -104,12 +104,6 @@ for line in open("./accesses.csv"):
     if(all(fil(url) for fil in filters)):
         byuser[parts[0]].append(Action(url,time,event))
         urls.add(url)
-urllist = list(urls)
-urllist.sort()
-for elem in urllist:
-    print(elem)
-sys.exit(0)
-
 
 #This function is used to split sessions. It generally splits a into sublists.
 #A split is made whenever fun returns true for list elements i and i+1
@@ -136,7 +130,7 @@ sessions_only_human_accesses = [[action for (i,action) in enumerate(session) if 
 resultfile = open('sessions.csv','w')
 for session in sessions:
     if len(session) > 1:
-        resultfile.write("\n".join([str(action.url) for action in session]) + '\n\n')
+        resultfile.write(",".join([str(action.url) for action in session]) + '\n')
 
 #Some statistics on number of session and click length
 #print("numusers" + str(len(byuser.keys())))
