@@ -125,10 +125,11 @@ for actions in byuser.values():
 
 
 #Filter out where two requests happen at the same time
-sessions_only_human_accesses = [[action for (i,action) in enumerate(session) if (i == 0) or not session[i].time == session[i-1].time] for session in sessions]
+sessions_no_dup_requests = [[action for (i,action) in enumerate(session) if (i == 0) or not session[i].time == session[i-1].time] for session in sessions]
+sessions_only_human_accesses = [session for session in sessions_no_dup_requests if len(session) < 20]
 
 resultfile = open('sessions.csv','w')
-for session in sessions:
+for session in sessions_only_human_accesses:
     if len(session) > 1:
         resultfile.write(",".join([str(action.url) for action in session]) + '\n')
 
