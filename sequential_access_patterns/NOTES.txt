@@ -1,2 +1,5 @@
 discussion in the lecture resulted in setting the session timeout for the
 purposes of this task to ~ 10s
+
+Frequent patterns seem to involve going to the assignments section and opening
+a particular assignment
