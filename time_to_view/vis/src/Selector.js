@@ -13,7 +13,7 @@ class Selector extends PureComponent {
 
   render() {
     return (
-      <select onChange={this.onChange} selected={this.props.current}>
+      <select onChange={this.onChange} value={this.props.current} selected={this.props.current}>
         {this.valuesToShow().map((thing, i) => <option key={i}>{thing}</option>)}
       </select>
     );

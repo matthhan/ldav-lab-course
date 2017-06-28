@@ -19,6 +19,9 @@ class Chart extends PureComponent {
     return newarr;
   }
   
+  componentDidMount() {
+    this.componentDidUpdate();
+  }
   componentDidUpdate() {
     Highcharts.chart('chartcontainer', {
       chart: {
