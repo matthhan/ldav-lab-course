@@ -1,12 +1,14 @@
 import data from './data.json';
 
-const courses = Object.keys(data);
+const courses = 
+  Object.keys(data)
+    .filter(course => Object.keys(data[course]).length > 1)
+    .filter(course => data[course][Object.keys(data[course])[0]].accesses.length > 1);
 export default class Data {
   getCourses() {
     return courses;
   }
   getDocumentsForCourse(course) {
-    console.log("getting doce");
     return Object.keys(data[course]);
   }
   getDataForDocument(course,document) {
