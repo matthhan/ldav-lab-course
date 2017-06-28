@@ -1,28 +1,20 @@
 {
-  "name": "timespent",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "webpack-dev-server"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
-    "css-loader": "^0.28.4",
-    "html-webpack-plugin": "^2.28.0",
-    "json-loader": "^0.5.4",
-    "style-loader": "^0.18.1",
-    "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
-  },
+  "name": "vis",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "d3": "^4.9.1"
-  }
+    "d3": "^4.9.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "homepage": "."
 }
