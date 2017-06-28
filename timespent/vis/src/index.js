@@ -1,7 +1,8 @@
 import * as d3 from 'd3';
-import test_data from './test_data.json'
+import data from './res.json'
 import './style.css'
 
+const one_course = data["16ws-02298"]
 function withLevels(arr,n) {
   if(!arr) return arr
   return arr.map(d => {return {...d,level:n,children:withLevels(d.children,n+1)}})
@@ -14,7 +15,7 @@ function sum(arr) {
   return res
 }
 //preprocess
-const preprocessed_data = withLevels(test_data,0)
+const preprocessed_data = withLevels(one_course,0)
 
 
 d3.select('#app').append('svg').attr('width',500).attr('height',500)
