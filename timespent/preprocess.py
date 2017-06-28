@@ -101,3 +101,22 @@ for line in open(sys.argv[1]):
     category = categorize_request(url)
     if(category):
         by_course[course].append(category)
+
+def summarize_accesses(accesses):
+    names = list(set([lis[0] for lis in accesses if lis]))
+    
+    res = list()
+    for name in names:
+        time_spent = len([x for x in accesses if x and x[0] == name ])
+        children = summarize_accesses([x[1:] for x in accesses if x and x[0] == name ])
+        res.append({
+            'name':name,
+            'seconds_spent':time_spent,
+            'children':children
+        })
+    return res
+
+res = dict()
+for course, accesses in by_course.items():
+    res[course] = summarize_accesses(accesses)
+print(json.dumps(res))
