@@ -6,6 +6,7 @@ import itertools as it
 import re 
 import sys
 import copy
+import json
 
 #Models requests for easier handling
 class Request:
@@ -114,23 +115,19 @@ def times_to_view(requests_for_document):
         userid = lambda key: key.userid
         for userid,requests in it.groupby(sorted(requests_after_initial_post,key=userid),key=userid):
             timedelta = initial_post.datetime - sorted(requests,key=lambda key: key.datetime)[0].datetime
-            timedeltas.append(timedelta)
-        #print(timedeltas)
-        return timedeltas
+            timedeltas.append(timedelta.seconds)
+        return {'initial': str(initial_post.datetime), 'accesses': timedeltas}
     return None
-def summarize(ttv):
-    return None
-res = copy.deepcopy(by_course_and_doc)
+res = dict()
 for course, docs in by_course_and_doc.items():
+    courseString = courses.stringOf(course)
+    res[courseString] = dict()
     for document, requests in docs.items():
+        documentString = documents.stringOf(document)
         ttv = times_to_view(requests)
         if(ttv):
-            res[course][doc] = summary
-        else:
-            res[course].pop(doc,None)
-            if(len(res[course].keys()) == 0):
-                res.pop(course,None)
-#TODO implement summary function
+            res[courseString][documentString] = ttv
+    if(len(res[courseString].keys()) == 0):
+        res.pop(courseString,None)
 
-
-
+print(json.dumps(res))
