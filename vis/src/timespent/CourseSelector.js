@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Chart from './Chart';
+import Chart from '../Chart';
 import Selector from './Selector';
 import Data from './Data';
+import renderChart from './renderChart'
 
 class CourseSelector extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class CourseSelector extends Component {
       <div>
         <Selector items={this.data.getCourses()} onChange={this.setSelectedCourse} current={this.state.selectedCourse}/>
         <div style={{height:'100px'}}/>
-        <Chart data={this.data.getDataForCourse(this.state.selectedCourse)}/>
+        <Chart data={this.data.getDataForCourse(this.state.selectedCourse)} renderChart={renderChart}/>
       </div>);
   }
 }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
 import CourseSelector from './CourseSelector';
 
-class App extends Component {
+class TimeSpent extends Component {
   render() {
     return (
       <div className="App">
@@ -13,4 +12,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default TimeSpent;
