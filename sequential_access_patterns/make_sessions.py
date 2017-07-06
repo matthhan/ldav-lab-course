@@ -88,7 +88,7 @@ class Action:
 urls = set()
 #reads the file accesses.csv, parsing dates into objects
 byuser = dict()
-for line in open("./accesses.csv"):
+for line in open(sys.argv[1]):
     parts = line.split(",")
     if(parts[0] == "user"):
         continue

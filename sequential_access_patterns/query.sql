@@ -1,1 +1,0 @@
-Select `User Id` AS user, `Occurred (GMT)` AS time, Event, `Document Location` AS url FROM ldavlab.sharepoint;
