@@ -8,10 +8,10 @@ if len(sys.argv) <= 1:
 username = sys.argv[1]
 password = sys.argv[2]
 folder = '../base_data'
-tmg_table_names = ['October','November', 'December', 'Jan2017', 'Feb2017', 'Mar2017']
+tmg_table_names = ['October','November', 'December', 'Jan2017', 'Feb2017', 'March2017']
 
 
-sharepoint_query = {'query':'SELECT `User Id` AS user, `Occurred (GMT)` AS time, Event, `Document Location` AS url FROM ldavlab.sharepoint', 'name': 'sharepoint'};
+sharepoint_query = {'query':'SELECT \`User Id\` AS user, \`Occurred (GMT)\` AS time, Event, \`Document Location\` AS url FROM ldavlab.sharepoint', 'name': 'sharepoint'};
 
 tmg_query_base = 'SELECT clientip AS user, logtime AS time, operation AS Event, uri AS url FROM TMG_';
 tmg_queries = [{'query':tmg_query_base + table_name, 'name':table_name} for table_name in tmg_table_names]
@@ -26,7 +26,6 @@ def make_script(thing):
     return "echo " + quote(thing['query']) + ' |  ' + mysql_invocation + ' | ' +translate_tabs_to_commas + ' > ' + save_file
 
 scripts = [make_script(query) for query in [sharepoint_query] + tmg_queries]
-
 
 for script in scripts:
     print(script)
