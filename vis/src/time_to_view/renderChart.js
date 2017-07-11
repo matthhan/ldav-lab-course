@@ -50,7 +50,7 @@ export default function renderChart(data,chartcontainer) {
     },
     series: [{data: getPlotArr(data),showInLegend: false}],
     title: {
-      text: `Time Until File was Seen after it was uploaded at ${getInitialUpload(this.data)}`,
+      text: `Time Until File was Seen after it was uploaded on ${getInitialUpload(this.data)}`,
     },
     tooltip: {
       formatter: formatTooltip

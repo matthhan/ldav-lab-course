@@ -35,8 +35,8 @@ class ChartSelector extends Component {
   render() {
     return (
       <div>
-        <Selector items={this.data.getCourses()} onChange={this.setSelectedCourse} current={this.state.selectedCourse}/>
-        <Selector items={this.state.selectableDocuments} onChange={this.setSelectedDocument} current={this.state.selectedDocument}/>
+        <Selector label="Select a Course" items={this.data.getCourses()} onChange={this.setSelectedCourse} current={this.state.selectedCourse}/>
+        <Selector label="Select a Document" items={this.state.selectableDocuments} onChange={this.setSelectedDocument} current={this.state.selectedDocument}/>
         <Chart data={this.data.getDataForDocument(this.state.selectedCourse,this.state.selectedDocument)} renderChart={renderChart}/>
       </div>);
   }

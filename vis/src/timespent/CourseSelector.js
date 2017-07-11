@@ -22,7 +22,7 @@ class CourseSelector extends Component {
   render() {
     return (
       <div>
-        <Selector items={this.data.getCourses()} onChange={this.setSelectedCourse} current={this.state.selectedCourse}/>
+        <Selector label="Select a Course" items={this.data.getCourses()} onChange={this.setSelectedCourse} current={this.state.selectedCourse}/>
         <div style={{height:'100px'}}/>
         <Chart data={this.data.getDataForCourse(this.state.selectedCourse)} renderChart={renderChart}/>
       </div>);
