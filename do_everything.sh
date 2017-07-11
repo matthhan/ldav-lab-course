@@ -11,13 +11,13 @@
 #mv sequential_access_patterns/data.json vis/src/sequential_access_patterns/data.json;
 
 
-#cd time_to_view;
-#./do_everything.sh;
-#cd ..;
-#mv time_to_view/data.json vis/src/time_to_view/data.json;
-
-
-cd timespent;
+cd time_to_view;
 ./do_everything.sh;
 cd ..;
-mv timespent/data.json vis/src/timespent/data.json;
+mv time_to_view/data.json vis/src/time_to_view/data.json;
+
+
+#cd timespent;
+#./do_everything.sh;
+#cd ..;
+#mv timespent/data.json vis/src/timespent/data.json;
