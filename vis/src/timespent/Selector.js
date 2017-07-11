@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Select } from 'react-bootstrap';
 
 class Selector extends PureComponent {
   render() {

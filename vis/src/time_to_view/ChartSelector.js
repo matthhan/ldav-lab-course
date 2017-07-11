@@ -8,7 +8,7 @@ class ChartSelector extends Component {
   constructor(props) {
     super(props);
     this.data = new Data();
-    const selectedCourse = '16ws-03888'//this.data.getCourses()[0]
+    const selectedCourse = this.data.getCourses()[0]//'16ws-03888'//
     const selectableDocuments = this.data.getDocumentsForCourse(selectedCourse)
     this.state = { 
       selectedCourse,
