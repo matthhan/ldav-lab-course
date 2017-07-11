@@ -8,6 +8,9 @@ import sys
 import copy
 import json
 
+input_file_name = sys.argv[1]
+is_sharepoint = len(sys.argv) > 2 and sys.argv[2] == "sharepoint"
+
 #Models requests for easier handling
 class Request:
     def __init__(self,datetime,method,userid):
@@ -55,12 +58,16 @@ remove_post_shit = compose(remove_api,remove_cellstorage)
 #Extract relevant information from the line
 def extract_datetime(line):
     parts = line.split(",")
-    date_format = "%Y-%m-%d %H:%M:%S.%f"
-    if '.' not in parts[1]:
-        parts[1] += '.0'
-    return dt.datetime.strptime(parts[1],date_format)
+    if(is_sharepoint):
+        date_format = "%Y-%m-%dT%H:%M:%S"
+        return dt.datetime.strptime(parts[1],date_format)
+    else :
+        date_format = "%Y-%m-%d %H:%M:%S.%f"
+        if '.' not in parts[1]:
+            parts[1] += '.0'
+        return dt.datetime.strptime(parts[1],date_format)
 def extract_course(url):
-    return re.search(r"/(16ws-[0-9]*)/",url).group(1)
+    return re.search(r"/([0-9][0-9]ws-[0-9]*)/",url).group(1)
 def extract_document(url):
     return remove_post_shit(re.search(r"/StructuredMaterials/(.*)",url).group(1))
 def extract_url(line):
@@ -81,9 +88,8 @@ documents = TwoWayDict()
 courses = TwoWayDict()
 userids = TwoWayDict()
 by_course_and_doc = dict()
-
 atfirstline = True
-for line in open(sys.argv[1]):
+for line in open(input_file_name):
     if(atfirstline):
         atfirstline = False
         continue
@@ -106,9 +112,11 @@ for line in open(sys.argv[1]):
         by_course_and_doc[course][doc].append(new_request)
         lastadded = new_request
 
+
 def times_to_view(requests_for_document):
     timedeltas = list()
-    post_requests = list(filter(lambda req: req.method == 'POST',requests_for_document))
+    method_for_posting = 'Update' if is_sharepoint else 'POST'
+    post_requests = list(filter(lambda req: req.method == method_for_posting,requests_for_document))
     if(post_requests):
         initial_post = post_requests[0]
         requests_after_initial_post = [request for request in requests_for_document if request.datetime > initial_post.datetime]
@@ -118,6 +126,7 @@ def times_to_view(requests_for_document):
             timedeltas.append(timedelta.seconds)
         return {'initial': str(initial_post.datetime), 'accesses': timedeltas}
     return None
+    
 res = dict()
 for course, docs in by_course_and_doc.items():
     courseString = courses.stringOf(course)
