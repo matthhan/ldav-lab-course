@@ -1,15 +1,16 @@
 package edu.ldav.prefixspan
 
 class TwoWayDictionary(items:Seq[String]) {
+  System.err.println("making TwoWayDictionary")
   private val thereDir = items.toArray
-
-  private def initBackdirection = {
-    var temp = Map[String,Int]()
-    thereDir.indices.foreach(i => {temp = temp.updated(items(i),i)})
-    temp
+  System.err.println("Made array")
+  private val backdir = scala.collection.mutable.HashMap[String,Int]()
+  private def initBackdirection() = {
+    System.err.println("making dictionary")
+    System.err.print(".")
+    thereDir.indices.foreach(i => this.backdir.put(thereDir(i),i))
   }
-
-  private val backdir = initBackdirection
+  this.initBackdirection()
   def indexOfString(s:String): Int = this.backdir(s)
   def stringOfIndex(i:Int): String = this.thereDir(i)
 }

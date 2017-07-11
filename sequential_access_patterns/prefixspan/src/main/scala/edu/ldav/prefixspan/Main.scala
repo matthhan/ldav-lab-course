@@ -6,6 +6,7 @@ object Main {
   def main(args:Array[String]) = {
     val db = Source.fromFile(args(0)).getLines().map(_.split(",").toSeq).toSeq
     val (res,dict) = PrefixSpan.prefixSpan(db,args(1).toInt)
+    System.err.println("done with calculation. outputting")
     val sorted = res.sortBy(-_.badness)
     print("[")
     sorted.map(pattern =>
