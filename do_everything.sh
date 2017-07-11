@@ -6,5 +6,6 @@ cd data_extraction;
 cd ..;
 
 cd sequential_access_patterns;
-./do_everything.sh;
+#./do_everything.sh;
 cd ..;
+mv sequential_access_patterns/data.json vis/src/sequential_access_patterns/data.json;
