@@ -11,13 +11,22 @@ import datetime as dt
 import functools as ft
 import re as re
 import sys
+import urllib.parse
 
+#Read command line params
+inpfile = sys.argv[1]
+sharepoint = len(sys.argv) >= 3 and sys.argv[2] == "sharepoint"
 #Session timeout constant
 SESSION_TIMEOUT_SECS = 10
 #Only urls for which all of the filters return true are considered
 filters = [
         lambda s: "SiteAssets" not in s,
         lambda s: "_catalogs" not in s,
+        lambda s: "_layouts" not in s,
+        lambda s: "_vti_bin" not in s,
+        lambda s: "_api" not in s,
+        lambda s: '?' not in s,
+        lambda s: re.search(r".*/[w|s]s[0-9][0-9]/[0-9][0-9][w|s]s-[0-9]*/(.)*",s),
         lambda s: not s.endswith(".css") and not s.endswith(".js"),
         lambda s: "Preview Images" not in s,
         lambda s: not s.endswith("SitePages"),
@@ -34,16 +43,28 @@ filters = [
         lambda s: not s.endswith("Emails"),
         lambda s: not s.endswith("Video"),
         lambda s: not s.endswith(".000"),
-        lambda s: not "collaboration/Freigegebene Dokumente/images" in s
+        lambda s: not "collaboration/Freigegebene Dokumente/images" in s,
+        lambda s: not len(s) > 500,
+        lambda s: not re.search(r"www.[^.]*.rwth-aachen.de",s)
 ]
 
 compose = lambda f,g: (lambda x: g(f(x)))
+def fixpoint(f):
+    def blub(x):
+        inp = x
+        res = f(x)
+        while not (inp == res):
+            inp = res
+            res = f(inp)
+        return res
+    return blub
+        
 #All of the transforms are applied to urls
 transforms = ft.reduce(compose,[
         lambda s: s.translate({",":None}),
         lambda s: s.replace('"',''),
         lambda s: s.strip(),
-        lambda s: s[len("ws15/15ws-03860/"):],
+        lambda s: re.search(r".*/[w|s]s[0-9][0-9]/[0-9][0-9][w|s]s-[0-9]*/(.*)",s).group(1),
         lambda s: re.sub(r"(GWS_)([^/]*)","\\1$NAME_OF_GROUP",s),
 
         lambda s: re.sub(r"/S[0-9]+","/SUBMISSION_NUMBER",s),
@@ -52,31 +73,29 @@ transforms = ft.reduce(compose,[
         lambda s: re.sub(r"(Freigegebene Dokumente)/[^/]+/",r"\1/FOLDERNAME/",s),
         #lambda s: re.sub(r"(DiscussionForum)/.+(?!.aspx)+",r"\1/THREADNAME",s),
 
-        lambda s: re.sub(r"/[^/]+.(java)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(pdf)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(txt)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(png)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(zip)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(jpg)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(odt)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(docx)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(html)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(jar)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(rar)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(JPG)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(PDF)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(7z)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(tex)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(pages)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(rtf)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(uxf)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(Java)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(bmp)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(doc)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(pptx)$",r"/FILENAME.\1",s),
-        lambda s: re.sub(r"/[^/]+.(ser)$",r"/FILENAME.\1",s)
+        lambda s: re.sub(r"(DiscussionForum/)(.)*$",r"\1THREADNAME",s),
+        lambda s: re.sub(r"(WikiList1/)(.)*$",r"\1WIKI_ARTICLE_NAME",s),
+        fixpoint(lambda s: re.sub(r"(StructuredMaterials/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
+        fixpoint(lambda s: re.sub(r"(SharedDocuments/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
+        fixpoint(lambda s: re.sub(r"(MediaLibrary/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
+        fixpoint(lambda s: re.sub(r"(Freigegebene%20Dokumente/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
+        lambda s: re.sub(r"(StructuredMaterials/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
+        lambda s: re.sub(r"(SharedDocuments/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
+        lambda s: re.sub(r"(MediaLibrary/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
+        lambda s: re.sub(r"(Freigegebene%20Dokumente/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
+        fixpoint(lambda s: re.sub(r"/[^/]+\.([^.]*)$",r"/FILENAME",s) if not re.search(r".aspx$",s) else s),
 
 ])
+def parse_date(inp): 
+    tmg_date_format = "%Y-%m-%d %H:%M:%S.%f"
+    sharepoint_date_format = "%Y-%m-%dT%H:%M:%S"
+    if sharepoint:
+        date_format =  sharepoint_date_format 
+    else:
+        date_format = tmg_date_format
+        if '.' not in inp:
+            inp += '.0'
+    return dt.datetime.strptime(inp,date_format)
 #Model of action
 class Action:
     def __init__(self,url,time,event):
@@ -88,20 +107,21 @@ class Action:
 urls = set()
 #reads the file accesses.csv, parsing dates into objects
 byuser = dict()
-for line in open(sys.argv[1]):
+for line in open(inpfile):
     parts = line.split(",")
     if(parts[0] == "user"):
         continue
     if not parts[0] in byuser:
         byuser[parts[0]] = list()
 
-    date_format = "%Y-%m-%dT%H:%M:%S"
-    time = dt.datetime.strptime(parts[1],date_format)
-    event = parts[2]
-    #Remove commas from urls. also remove trailing whitespace
+    if not len(parts) >= 4:
+        continue
     url = ft.reduce(lambda a,b: a+b,parts[3:])
-    url = transforms(url)
     if(all(fil(url) for fil in filters)):
+        #Remove commas from urls. also remove trailing whitespace
+        url = transforms(url)
+        time = parse_date(parts[1])
+        event = parts[2]
         byuser[parts[0]].append(Action(url,time,event))
         urls.add(url)
 
