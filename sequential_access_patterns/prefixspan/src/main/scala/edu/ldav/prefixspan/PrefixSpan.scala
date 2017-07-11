@@ -46,5 +46,5 @@ object PrefixSpan {
   private def afterFirstOccurrenceOf(item: Item) = {
     sequence:Seq[Item] => if(sequence.startsWith(Seq(item))) sequence.tail else Seq()
   }
-  private def calcBadness(s:PatternWithFrequency):PatternWithBadness = PatternWithBadness(s.pattern,s.frequency * s.pattern.length)
+  private def calcBadness(s:PatternWithFrequency):PatternWithBadness = PatternWithBadness(s.pattern,Math.pow(s.frequency , s.pattern.length))
 }
