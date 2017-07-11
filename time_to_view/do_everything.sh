@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-./preprocess.py > data.json
+./preprocess.py ../base_data/sharepoint.csv sharepoint > data.json
