@@ -151,7 +151,7 @@ sessions_only_human_accesses = [session for session in sessions_no_dup_requests 
 resultfile = open('sessions.csv','w')
 for session in sessions_only_human_accesses:
     if len(session) > 1:
-        resultfile.write(",".join([str(action.url) for action in session]) + '\n')
+        resultfile.write(",".join([urllib.parse.unquote(str(action.url)) for action in session]) + '\n')
 
 #Some statistics on number of session and click length
 #print("numusers" + str(len(byuser.keys())))

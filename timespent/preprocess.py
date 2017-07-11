@@ -7,6 +7,7 @@ import re
 import sys
 import copy
 import json
+import urllib.parse
 
 #filters applied to urls before processing
 is_not_a_form = lambda s: not re.search(r"/StructuredMaterials/Forms",s)
@@ -110,7 +111,7 @@ def summarize_accesses(accesses):
         time_spent = len([x for x in accesses if x and x[0] == name ])
         children = summarize_accesses([x[1:] for x in accesses if x and x[0] == name ])
         res.append({
-            'name':name,
+            'name':urllib.parse.unquote(name),
             'seconds_spent':time_spent,
             'children':children
         })

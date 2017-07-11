@@ -7,6 +7,7 @@ import re
 import sys
 import copy
 import json
+import urllib.parse
 
 input_file_name = sys.argv[1]
 is_sharepoint = len(sys.argv) > 2 and sys.argv[2] == "sharepoint"
@@ -132,7 +133,7 @@ for course, docs in by_course_and_doc.items():
     courseString = courses.stringOf(course)
     res[courseString] = dict()
     for document, requests in docs.items():
-        documentString = documents.stringOf(document)
+        documentString = urllib.parse.unquote(documents.stringOf(document))
         ttv = times_to_view(requests)
         if(ttv):
             res[courseString][documentString] = ttv
