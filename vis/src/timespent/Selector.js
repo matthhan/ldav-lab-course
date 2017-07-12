@@ -1,15 +1,19 @@
-import React, { PureComponent } from 'react';
-import { FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
+import React, { Component } from 'react';
+import VirtualizedSelect from 'react-virtualized-select';
 
-class Selector extends PureComponent {
+import 'react-select/dist/react-select.css'
+class Selector extends Component {
   render() {
     return (
-      <FormGroup>
-        <ControlLabel>{this.props.label}</ControlLabel>
-        <FormControl componentClass="select" onChange={this.props.onChange} value={this.props.current} selected={this.props.current}>
-          {this.props.items.map((thing, i) => <option key={i}>{thing}</option>)}
-        </FormControl>
-      </FormGroup>
+        <VirtualizedSelect 
+          autofocus 
+          searchable
+          clearable={false}
+          multi={false}
+          onChange={this.props.onChange}
+          simpleValue
+          value={this.props.current}
+          options={this.props.items.map(x => {return {label:x,value:x}})}/>
     );
   }
 }

@@ -14,9 +14,9 @@ class CourseSelector extends Component {
     this.setSelectedCourse = this.setSelectedCourse.bind(this);
 
   }
-  setSelectedCourse(event) {
+  setSelectedCourse(value) {
     this.setState({
-      selectedCourse:event.target.value
+      selectedCourse:value
     });
   }
   render() {
