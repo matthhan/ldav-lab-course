@@ -30,7 +30,7 @@ export default function renderChart(data,containerid) {
     const s = slices[i]
     if(s.data.children) {
       const endAngle = s.startAngle + (s.endAngle - s.startAngle) * (sum(s.data.children.map(x => x.seconds_spent))/s.data.seconds_spent)
-      slices = slices.concat(d3.pie().value(d => d.seconds_spent).startAngle(s.startAngle).endAngle(endAngle).padAngle(0.03)(s.data.children))
+      slices = slices.concat(d3.pie().value(d => d.seconds_spent).startAngle(s.startAngle).endAngle(endAngle).padAngle(0.005)(s.data.children))
     }
   }
 
