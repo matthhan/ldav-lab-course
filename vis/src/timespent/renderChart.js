@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import './style.css';
 
 export default function renderChart(data,containerid) {
+  if(!data) return;
   function withLevels(arr,n) {
     if(!arr) return arr
     return arr.map(d => {return {...d,level:n,children:withLevels(d.children,n+1)}})
@@ -45,7 +46,7 @@ export default function renderChart(data,containerid) {
     .attr('fill',d => color(d.data.name))
     .on('mouseover', d => {
       ttdiv.transition().duration(200).style('opacity',.9)    
-      ttdiv.html(decodeURIComponent(d.data.name) + '<br>' + d.data.seconds_spent + 's')
+      ttdiv.html(decodeURIComponent(d.data.name) + '<br>' + format_time_amount(d.data.seconds_spent))
         .style('left',d3.event.pageX + 'px')
         .style('top',(d3.event.pageY -28) + 'px')
     })
@@ -54,3 +55,5 @@ export default function renderChart(data,containerid) {
     })
 
 }
+
+const format_time_amount = (seconds) => Math.round(seconds / (60 * 60)) + " hours " + Math.round((seconds % (60*60)) / 60) +  " minutes " 
