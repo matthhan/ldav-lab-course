@@ -57,36 +57,32 @@ def parse_path_items(path):
     res = [first]
     res.extend(parse_path_items(rest))
     return res
-def subcategorize_learning_material(url):
-    rest = re.search(r"/StructuredMaterials(.*)",url).group(1)
-    subcategories = parse_path_items(rest)
-    res = ["Learning Material"]
-    res.extend(subcategories)
-    return res
+def path_after(prefix,inp):
+    return parse_path_items(re.search(prefix + r"(.*)",url).group(1))
 
 def categorize_request(url):
     if(re.search(r"/StructuredMaterials/",url)):
-        return subcategorize_learning_material(url)
+        return ["Learning Material"] + path_after("/StructuredMaterials",url)
     elif(re.search(r"/LA_Assignments/",url) or re.search(r"/LA_AssignmentDocuments/",url)):
-        return ["Assignment"]
+        return ["Assignment"] + path_after("/LA_Assignments",url)
     elif(re.search(r"/MediaLibrary/",url)):
-        return ["Media Item"]
+        return ["Media Item"] + path_after("/MediaLibrary",url)
     elif(re.search(r"/eTests_IFrame.aspx",url)):
         return ["E-Test"]
     elif(re.search(r"/DiscussionForum/",url)):
-        return ["Discussion Forum"]
+        return ["Discussion Forum"] + path_after("/DiscussionForum",url)
     elif(re.search(r"/LA_SampleSolutions/",url)):
-        return ["Sample Solution"]
+        return ["Sample Solution"] + path_after("/LA_SampleSolutions",url)
     elif(re.search(r"/LiteratureDocuments/",url)):
-        return ["Literature Document"]
+        return ["Literature Document"] + path_after("/LiteratureDocuments",url)
     elif(re.search(r"/SharedDocuments/",url)):
-        return ["Shared Document"]
+        return ["Shared Document"] + path_after("/SharedDocuments",url)
     elif(re.search(r"Dynexite_IFrame.aspx",url)):
         return ["Dynexite"]
     elif(re.search(r"/GWS_[^/]*/",url)):
-        return ["Group Workspace"]
+        return ["Group Workspace"] + path_after("/GWS_[^/]*",url)
     elif(re.search(r"/WikiList1/",url)):
-        return ["Wiki"]
+        return ["Wiki"] + path_after("/WikiList1",url)
     return None
 
 class Request: 
