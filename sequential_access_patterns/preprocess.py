@@ -9,9 +9,10 @@
 
 import datetime as dt
 import functools as ft
-import re as re
+import re
 import sys
 import urllib.parse
+import os
 
 #Read command line params
 inpfile = sys.argv[1]
@@ -73,17 +74,18 @@ transforms = ft.reduce(compose,[
         lambda s: re.sub(r"(Freigegebene Dokumente)/[^/]+/",r"\1/FOLDERNAME/",s),
         #lambda s: re.sub(r"(DiscussionForum)/.+(?!.aspx)+",r"\1/THREADNAME",s),
 
-        lambda s: re.sub(r"(DiscussionForum/)(.)*$",r"\1THREADNAME",s),
-        lambda s: re.sub(r"(WikiList1/)(.)*$",r"\1WIKI_ARTICLE_NAME",s),
         fixpoint(lambda s: re.sub(r"(StructuredMaterials/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
         fixpoint(lambda s: re.sub(r"(SharedDocuments/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
         fixpoint(lambda s: re.sub(r"(MediaLibrary/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
         fixpoint(lambda s: re.sub(r"(Freigegebene%20Dokumente/(FOLDERNAME/)*)([^/]*)/",r"\1FOLDERNAME/",s)),
-        lambda s: re.sub(r"(StructuredMaterials/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
-        lambda s: re.sub(r"(SharedDocuments/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
-        lambda s: re.sub(r"(MediaLibrary/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
-        lambda s: re.sub(r"(Freigegebene%20Dokumente/([^/]*/)*)[^/]+$",r"\1FILENAME/",s),
-        fixpoint(lambda s: re.sub(r"/[^/]+\.([^.]*)$",r"/FILENAME",s) if not re.search(r".aspx$",s) else s),
+        lambda s: re.sub(r"(DiscussionForum/)(.)*$",r"\1THREADNAME",s)                    if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"(WikiList1/)(.)*$",r"\1WIKI_ARTICLE_NAME",s)                   if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"/[^/]+\.([^.]*)$",r"/FILENAME",s)                              if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"(StructuredMaterials/([^/]*/)*)[^/]+$",r"\1FOLDERNAME",s)      if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"(SharedDocuments/([^/]*/)*)[^/]+$",r"\1FOLDERNAME",s)          if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"(MediaLibrary/([^/]*/)*)[^/]+$",r"\1FOLDERNAME",s)             if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"(Freigegebene%20Dokumente/([^/]*/)*)[^/]+$",r"\1FOLDERNAME",s) if not re.search(r".aspx$",s) else s,
+        lambda s: re.sub(r"/AllItems.aspx$","",s)
 
 ])
 def parse_date(inp): 
@@ -107,7 +109,12 @@ class Action:
 urls = set()
 #reads the file accesses.csv, parsing dates into objects
 byuser = dict()
+file_lines = os.stat(inpfile).st_size / 200
+i = 0
 for line in open(inpfile):
+    i += 1
+    if(i%1000 == 0):
+        print(str(((i/file_lines)*100)//1) + "% Done",end='\r',file=sys.stderr)
     parts = line.split(",")
     if(parts[0] == "user"):
         continue

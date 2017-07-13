@@ -13,7 +13,7 @@ object Main {
       "{" + enquote("badness") + ":" + pattern.badness + "," +
         enquote("pattern") + ":[" + pattern.pattern.map(i => enquote(dict.stringOfIndex(i))).mkString(",") +
         "]}")
-      .foreach(x => print(x + ",\n"))
+          .zipWithIndex.foreach( { case (x,i) => print(x + (if(i < sorted.length -1) ",\n" else  "")) } )
     print("]")
   }
   def enquote(s:String)= "\"" + s + "\""
