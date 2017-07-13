@@ -12,6 +12,7 @@ tmg_table_names = ['October','November', 'December', 'Jan2017', 'Feb2017', 'Marc
 
 
 sharepoint_query = {'query':'SELECT \`User Id\` AS user, \`Occurred (GMT)\` AS time, Event, \`Document Location\` AS url FROM ldavlab.sharepoint', 'name': 'sharepoint'};
+courserooms_query = {'query':'SELECT * FROM ldavlab.courseRooms;','name':'course_rooms'}
 
 tmg_query_base = 'SELECT clientip AS user, logtime AS time, operation AS Event, uri AS url FROM TMG_';
 tmg_queries = [{'query':tmg_query_base + table_name, 'name':table_name} for table_name in tmg_table_names]
@@ -25,8 +26,8 @@ def make_script(thing):
 
     return "echo " + quote(thing['query']) + ' |  ' + mysql_invocation + ' | ' +translate_tabs_to_commas + ' > ' + save_file
 
-scripts = [make_script(query) for query in [sharepoint_query] + tmg_queries]
+#scripts = [make_script(query) for query in [sharepoint_query] + tmg_queries + [courserooms_query]]
 
-for script in scripts:
+for script in [make_script(courserooms_query)]:
     print(script)
     os.system(script)
