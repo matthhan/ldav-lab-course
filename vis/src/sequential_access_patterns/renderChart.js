@@ -13,7 +13,21 @@ export default function renderChart(data,chartcontainer) {
   d3.select('#'+ chartcontainer).append('svg').attr('width','100%').attr('height',10000)
   let svg = d3.select('svg')
 
-  const patternstring = pattern => pattern.join("<br>")
+  const patternstring = pattern => {
+    let res = ""
+    for(let i = 0;i < pattern.length;i++) {
+      if(i === 0) {
+        res += pattern[i]
+      } else if(pattern[i].startsWith(pattern[i-1])) {
+        res += " -> " + pattern[i].slice(pattern[i-1].length)
+      } else if(pattern[i-1].startsWith(pattern[i])) {
+        res += " ->" + (new Array(pattern[i-1].slice(pattern[i].length,pattern[i-1].length).split("/").length).fill("..").join('/'))
+      } else {
+        res += " -><br>" + pattern[i]
+      }
+    }
+    return res.replace(/FOLDERNAME/g,"folder")
+  }
 
   const widthscale = d3.scaleLog().domain([0.1,Math.max(...(patterns.map(x => x.badness)))]).range([0,300])
   let colorcounter = 0;
