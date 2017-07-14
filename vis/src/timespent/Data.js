@@ -6,6 +6,6 @@ export default class Data {
     return courses.filter(course => data[course].length > 0 );
   }
   getDataForCourse(course) {
-    return data[course];
+    return data[course].accesses;
   }
 }

@@ -10,7 +10,12 @@ import sys
 import copy
 import json
 import urllib.parse
+from preprocess_courses_table import find_courses 
+
 inpfilename= sys.argv[1]
+coursroomsfilename = sys.argv[2]
+courses = find_courses(coursroomsfilename)
+
 #filters applied to urls before processing
 is_not_a_form = lambda s: not re.search(r"/StructuredMaterials/Forms",s)
 is_not_layout = lambda s: not re.search(r"/_layouts/",s)
@@ -63,8 +68,10 @@ def path_after(prefix,inp):
 def categorize_request(url):
     if(re.search(r"/StructuredMaterials/",url)):
         return ["Learning Material"] + path_after("/StructuredMaterials",url)
-    elif(re.search(r"/LA_Assignments/",url) or re.search(r"/LA_AssignmentDocuments/",url)):
+    elif(re.search(r"/LA_Assignments/",url)):
         return ["Assignment"] + path_after("/LA_Assignments",url)
+    elif(re.search(r"/LA_AssignmentDocuments/",url)):
+        return ["Assignment Document"] + path_after("/LA_AssignmentDocuments",url)
     elif(re.search(r"/MediaLibrary/",url)):
         return ["Media Item"] + path_after("/MediaLibrary",url)
     elif(re.search(r"/eTests_IFrame.aspx",url)):
@@ -167,5 +174,12 @@ for user,requests in by_user.items():
     add_time_spent(requests)
 res = dict()
 for course, accesses in by_course.items():
-    res[course] = summarize_accesses(accesses)
+    right_lv_number = [x for x in courses if (x['lv_number'] == course)]
+    if(len(right_lv_number) > 0 ):
+        coursobj = right_lv_number[0]
+        res[course] = {'accesses':summarize_accesses(accesses),'faculty':coursobj['faculty'],'title': coursobj['name'],'institute':coursobj['institute'],'semester':coursobj['semester']}
+    else: 
+        print("no file with lv number " + course + " found ",file=sys.stderr)
+
+
 print(json.dumps(res))
