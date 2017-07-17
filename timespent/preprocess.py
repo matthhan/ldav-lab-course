@@ -12,8 +12,8 @@ import json
 import urllib.parse
 from preprocess_courses_table import find_courses 
 
-inpfilename= sys.argv[1]
-coursroomsfilename = sys.argv[2]
+coursroomsfilename = sys.argv[1]
+inpfilenames = sys.argv[2:]
 courses = find_courses(coursroomsfilename)
 
 #filters applied to urls before processing
@@ -102,40 +102,41 @@ class Request:
 
 by_course = dict()
 by_user = dict()
-file_lines = os.stat(inpfilename).st_size / 200
+file_lines = sum([os.stat(inpfilename).st_size / 200 for inpfilename in inpfilenames])
 i = 0
-for line in open(inpfilename):
-    i+= 1
-    if(i == 1):
-        continue
-    if(i % 1000 == 0):
-        print(str(((i/file_lines)*100)//1) + "% Done", end= '\r', file=sys.stderr)
+for inpfilename in inpfilenames:
+    for line in open(inpfilename):
+        i+= 1
+        if(i == 1):
+            continue
+        if(i % 1000 == 0):
+            print(str(((i/file_lines)*100)//1) + "% Done", end= '\r', file=sys.stderr)
 
-    url = extract_url(line)
-    if(not url):
-        continue
-    method = extract_method(line)
-    
-    if(not (method == 'GET')):
-        continue
-    if(not url_is_interesting(url)):
-        continue
+        url = extract_url(line)
+        if(not url):
+            continue
+        method = extract_method(line)
+        
+        if(not (method == 'GET')):
+            continue
+        if(not url_is_interesting(url)):
+            continue
 
-    course = extract_course(url)
-    if(course not in by_course):
-        by_course[course] = list()
-    res = Request()
-    res.category = categorize_request(url)
-    res.time_spent = 1
-    res.datetime = extract_datetime(line)
-    res.userid = extract_userid(line)
-    if(res.userid not in by_user):
-        by_user[res.userid] = list()
+        course = extract_course(url)
+        if(course not in by_course):
+            by_course[course] = list()
+        res = Request()
+        res.category = categorize_request(url)
+        res.time_spent = 1
+        res.datetime = extract_datetime(line)
+        res.userid = extract_userid(line)
+        if(res.userid not in by_user):
+            by_user[res.userid] = list()
 
 
-    if(res.category):
-        by_course[course].append(res)
-        by_user[res.userid].append(res)
+        if(res.category):
+            by_course[course].append(res)
+            by_user[res.userid].append(res)
 default_time = 600
 def add_time_spent(one_users_requests):
     one_users_requests.sort(key=lambda request: request.datetime)
@@ -178,8 +179,6 @@ for course, accesses in by_course.items():
     if(len(right_lv_number) > 0 ):
         coursobj = right_lv_number[0]
         res[course] = {'accesses':summarize_accesses(accesses),'faculty':coursobj['faculty'],'title': coursobj['name'],'institute':coursobj['institute'],'semester':coursobj['semester']}
-    else: 
-        print("no file with lv number " + course + " found ",file=sys.stderr)
 
 
 print(json.dumps(res))
