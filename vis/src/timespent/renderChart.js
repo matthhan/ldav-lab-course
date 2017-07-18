@@ -22,7 +22,7 @@ export default function renderChart(data,containerid) {
   d3.select('#'+ containerid).append('svg').attr('width','100%').attr('height',500).attr('preserveAspectRatio','xMidYMid meet').attr('viewBox','0 0 500 500')
   let svg = d3.select('svg').style('display','block').style('margin','auto')
 
-  const g = svg.append('g').attr('transform','translate(200,200) scale(2.5,2.5)')
+  const g = svg.append('g').attr('transform','translate(200,250) scale(2.5,2.5)')
 
   const pie = d3.pie().value(d => d.seconds_spent).padAngle(0.03)
   const first_level_slices = pie(preprocessed_data)

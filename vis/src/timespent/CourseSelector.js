@@ -27,8 +27,7 @@ class CourseSelector extends Component {
                   onChange={this.setSelectedCourse}
                   current={this.state.selectedCourse}
                   makeLabel={course => this.data.getTitle(course)}/>
-        <div style={{height:'100px'}}/>
-        <Chart data={this.data.getDataForCourse(this.state.selectedCourse)} renderChart={renderChart}/>
+        <Chart style={{marginTop:'30px',marginBottom:'30px'}} data={this.data.getDataForCourse(this.state.selectedCourse)} renderChart={renderChart}/>
       </div>);
   }
 }

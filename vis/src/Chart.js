@@ -7,7 +7,7 @@ class Chart extends Component {
     this.props.renderChart(this.props.data,'chartcontainer')
   }
   render() {
-    return (<div id="chartcontainer"/>);
+    return (<div style={this.props.style}id="chartcontainer"/>);
   }
 }
 
