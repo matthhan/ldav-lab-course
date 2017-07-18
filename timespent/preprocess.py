@@ -100,11 +100,12 @@ class Request:
         return cp
 
 
-by_course = dict()
-by_user = dict()
+final_result = dict()
 file_lines = sum([os.stat(inpfilename).st_size / 200 for inpfilename in inpfilenames])
 i = 0
 for inpfilename in inpfilenames:
+    by_course = dict()
+    by_user = dict()
     for line in open(inpfilename):
         i+= 1
         if(i == 1):
@@ -137,48 +138,57 @@ for inpfilename in inpfilenames:
         if(res.category):
             by_course[course].append(res)
             by_user[res.userid].append(res)
-default_time = 600
-def add_time_spent(one_users_requests):
-    one_users_requests.sort(key=lambda request: request.datetime)
-    for i, request in enumerate(one_users_requests):
-        is_last_request = i == (len(one_users_requests)-1)
-        if(is_last_request):
-            request.time_spent = default_time
+    default_time = 600
+    def add_time_spent(one_users_requests):
+        one_users_requests.sort(key=lambda request: request.datetime)
+        for i, request in enumerate(one_users_requests):
+            is_last_request = i == (len(one_users_requests)-1)
+            if(is_last_request):
+                request.time_spent = default_time
+            else:
+                next_request = one_users_requests[i+1]
+                request.time_spent = calculate_time_spent(request,next_request)
+
+    def calculate_time_spent(request,next_request):
+        passed_time = (next_request.datetime - request.datetime).seconds
+        two_hours = 7200 
+        if(passed_time > two_hours):
+            return default_time
         else:
-            next_request = one_users_requests[i+1]
-            request.time_spent = calculate_time_spent(request,next_request)
-
-def calculate_time_spent(request,next_request):
-    passed_time = (next_request.datetime - request.datetime).seconds
-    two_hours = 7200 
-    if(passed_time > two_hours):
-        return default_time
-    else:
-        return passed_time
+            return passed_time
 
 
-def summarize_accesses(requests):
-    first_level_names = list(set([request.category[0] for request in requests if request.category]))
-    
-    res = list()
-    for name in first_level_names:
-        time_spent = sum([request.time_spent for request in requests if request.category and request.category[0] == name ])
-        children = summarize_accesses([request.get_rest_categories() for request in requests if request.category and request.category[0] == name ])
-        res.append({
-            'name':urllib.parse.unquote(name),
-            'seconds_spent':time_spent,
-            'children':children
-        })
-    return res
+    def summarize_accesses(requests):
+        first_level_names = list(set([request.category[0] for request in requests if request.category]))
+        
+        res = list()
+        for name in first_level_names:
+            time_spent = sum([request.time_spent for request in requests if request.category and request.category[0] == name ])
+            children = summarize_accesses([request.get_rest_categories() for request in requests if request.category and request.category[0] == name ])
+            res.append({
+                'name':urllib.parse.unquote(name),
+                'seconds_spent':time_spent,
+                'children':children
+            })
+        return res
 
-for user,requests in by_user.items():
-    add_time_spent(requests)
-res = dict()
-for course, accesses in by_course.items():
-    right_lv_number = [x for x in courses if (x['lv_number'] == course)]
-    if(len(right_lv_number) > 0 ):
-        coursobj = right_lv_number[0]
-        res[course] = {'accesses':summarize_accesses(accesses),'faculty':coursobj['faculty'],'title': coursobj['name'],'institute':coursobj['institute'],'semester':coursobj['semester']}
+    def merge(old_accesses,new_accesses):
+        for access in new_accesses:
+            matching = [oldacc  for oldacc in old_accesses if oldacc['name'] == access['name']]
+            if len(matching) > 0:
+                matching[0]['seconds_spent'] += access['seconds_spent']
+                merge(matching[0]['children'],access['children'])
+            else: 
+                old_accesses.append(access)
+    for user,requests in by_user.items():
+        add_time_spent(requests)
+    for course, accesses in by_course.items():
+        right_lv_number = [x for x in courses if (x['lv_number'] == course)]
+        if(len(right_lv_number) > 0 ):
+            coursobj = right_lv_number[0]
+            if(course in final_result):
+                merge(final_result[course]['accesses'],summarize_accesses(accesses))
+            else:
+                final_result[course] = {'accesses':summarize_accesses(accesses),'faculty':coursobj['faculty'],'title': coursobj['name'],'institute':coursobj['institute'],'semester':coursobj['semester']}
 
-
-print(json.dumps(res))
+print(json.dumps(final_result))
