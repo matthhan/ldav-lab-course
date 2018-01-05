@@ -1,7 +1,7 @@
 # Learning Data Analytics and Visualization Lab Course
 
 ## What this is
-I wrote this code in 2017 as part of the course "Learning Data Analytics and Visualization". It Fetches Data from a non-public MySQL database containing web server logs from an e-learning platform that is based on SharePoint and produces three visualizations:
+I wrote this code in 2017 as part of the course "Learning Data Analytics and Visualization". It fetches data from a non-public MySQL database containing web server logs from an e-learning platform that is based on SharePoint and produces three visualizations:
 
 * The first visualization shows frequent sequential patterns in the requests that people made to the web server. This was intended to find places where the usability of the page could be improved by adding more direct links to the things that people want to access.
 * The second visualization shows a hierarchical pie chart (like the baobab software) of which parts of the system the learners spent their time in. The time spent is approximated from the dates of the requests by using a simple heuristic.
